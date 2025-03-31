@@ -1,0 +1,26 @@
+{
+  "name": "CCU Class homework2Calendar",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": ["https://ecourse2.ccu.edu.tw/*"],
+      "js": ["src/js/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": "ccuclass_icon.png"
+  },
+  "permissions": [
+    "cookies"
+  ],
+  "host_permissions": [
+    "https://ecourse2.ccu.edu.tw/*"
+  ],
+  "background": {
+    "service_worker": "src/js/background.js"
+  }
+}
