@@ -19,8 +19,5 @@
   ],
   "host_permissions": [
     "https://ecourse2.ccu.edu.tw/*"
-  ],
-  "background": {
-    "service_worker": "src/js/background.js"
-  }
+  ]
 }
