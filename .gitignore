@@ -3,3 +3,5 @@ temp.txt
 src/css/output.css 
 dist/
 *.zip
+*.crx
+*.pem

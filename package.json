@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@tailwindcss/cli": "^4.0.17",
+    "jsonpath-plus": "^10.3.0",
+    "rollup": "^4.38.0",
     "tailwindcss": "^4.0.17"
   },
   "devDependencies": {
