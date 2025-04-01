@@ -2,3 +2,4 @@ node_modules/
 temp.txt
 src/css/output.css 
 dist/
+*.zip
