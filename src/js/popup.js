@@ -30,12 +30,6 @@ END:VEVENT
 }
 
 document.getElementById("exportBtn").addEventListener("click", async () => {
-  // Check if the user is in moodle page
-  const isMoodlePage = window.location.href.includes("ecourse2.ccu.edu.tw");
-  if (!isMoodlePage) {
-    alert("Please open this extension in the eCourse2 page.");
-    return;
-  }
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "get_sesskey" }, async (res) => {
       const sesskey = res?.sesskey;
@@ -63,7 +57,7 @@ document.getElementById("exportBtn").addEventListener("click", async () => {
       );
 
       const raw_data = await response.json();
-
+      console.log(raw_data);
       const data = raw_data[0]["data"]["weeks"]
         .flatMap((week) => week.days)
         .flatMap((day) => day.events)
