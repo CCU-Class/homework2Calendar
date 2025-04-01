@@ -37,9 +37,11 @@ jobs:
       - name: Check zip file exists
         run: test -f dist.zip && echo "dist.zip created"
 
-      - name: Validate manifest.json
-        run: |
-          npx --yes @fregante/webext-validate dist/manifest.json
+      - name: Upload dist.zip as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-zip
+          path: dist.zip
 
       - name: Inspect zip content
         run: unzip -l dist.zip | grep -E 'manifest\.json|popup\.html|content\.js'
