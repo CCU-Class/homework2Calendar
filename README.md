@@ -1,9 +1,25 @@
-## Tailwind CSS
+## Usage
 
 ```
 npm install
 ```
 
 ```
-npx @tailwindcss/cli -i ./src/css/input.css -o ./src/css/output.css --watch
+npm run build
+```
+
+## Tailwind hotfix
+
+```
+npm run hotfixcss
+```
+
+## eslint
+```
+npm run lint
+```
+
+## format
+```
+npm run format
 ```
