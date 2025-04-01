@@ -7,6 +7,7 @@
     "vite-plugin-chrome-extension": "^0.0.7"
   },
   "scripts": {
-    "build": "vite build"
+    "build": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css && vite build",
+    "hotfixcss": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css --watch"
   }
 }
