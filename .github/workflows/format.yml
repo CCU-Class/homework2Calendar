@@ -1,0 +1,45 @@
+name: Chrome Extension CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint with ESLint
+        run: npm run lint
+
+      - name: Check Prettier format
+        run: npx prettier --check 'src/**/*.{js,html,css}'
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Zip dist/
+        run: zip -r dist.zip dist
+
+      - name: Check zip file exists
+        run: test -f dist.zip && echo "dist.zip created"
+
+      - name: Validate manifest.json
+        run: |
+          npx --yes @fregante/webext-validate dist/manifest.json
+
+      - name: Inspect zip content
+        run: unzip -l dist.zip | grep -E 'manifest\.json|popup\.html|content\.js'
