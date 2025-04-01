@@ -4,10 +4,18 @@
     "tailwindcss": "^4.0.17"
   },
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.5",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
     "vite-plugin-chrome-extension": "^0.0.7"
   },
   "scripts": {
     "build": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css && vite build",
-    "hotfixcss": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css --watch"
+    "hotfixcss": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css --watch",
+    "format": "prettier --write 'src/**/*.{js,html,css}'",
+    "lint": "eslint"
   }
 }
