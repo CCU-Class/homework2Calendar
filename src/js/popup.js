@@ -3,12 +3,18 @@ import { getCurrentYearMonth, downloadICS } from "./utils.js";
 function initializeInputs() {
   const { year, month } = getCurrentYearMonth();
   document.getElementById("yearInput").value = year;
+  // set year max to year + 1
+  document.getElementById("yearInput").max = year + 1;
   document.getElementById("monthInput").value = month;
 }
 
 async function fetchCalendarData(sesskey) {
   const year = parseInt(document.getElementById("yearInput").value);
   const month = parseInt(document.getElementById("monthInput").value);
+  if (month < 1 || month > 12) {
+    console.error("Invalid month value:", month);
+    return;
+  }
   // day is dont care
   const day = 1;
 
