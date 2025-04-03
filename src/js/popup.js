@@ -109,10 +109,10 @@ async function launchWebAuthFlowForGoogle() {
     // Except Chrome Client ID
     const clientId = import.meta.env.VITE_NOT_CHROME_CLIENT_ID;
     const scope = "https://www.googleapis.com/auth/calendar.events";
-    
+
     const redirectUri = `https://${chrome.runtime.id}.chromiumapp.org/`;
 
-    const authUrl = 
+    const authUrl =
       "https://accounts.google.com/o/oauth2/v2/auth" +
       `?response_type=token` +
       `&client_id=${encodeURIComponent(clientId)}` +
@@ -120,40 +120,42 @@ async function launchWebAuthFlowForGoogle() {
       `&scope=${encodeURIComponent(scope)}` +
       `&prompt=consent`;
 
-    chrome.identity.launchWebAuthFlow({
-      url: authUrl,
-      interactive: true
-    }, (responseUrl) => {
-      if (chrome.runtime.lastError) {
-        console.error("launchWebAuthFlow error:", chrome.runtime.lastError);
-        return reject(chrome.runtime.lastError);
-      }
-      if (!responseUrl) {
-        return reject("Unable to obtain authorization result");
-      }
+    chrome.identity.launchWebAuthFlow(
+      {
+        url: authUrl,
+        interactive: true,
+      },
+      (responseUrl) => {
+        if (chrome.runtime.lastError) {
+          console.error("launchWebAuthFlow error:", chrome.runtime.lastError);
+          return reject(chrome.runtime.lastError);
+        }
+        if (!responseUrl) {
+          return reject("Unable to obtain authorization result");
+        }
 
-      const urlFragment = responseUrl.split("#")[1];
-      if (!urlFragment) {
-        return reject("Unable to retrieve token from callback URL");
-      }
-      const params = new URLSearchParams(urlFragment);
-      const token = params.get("access_token");
-      if (!token) {
-        return reject("Postback URL has no access_token");
-      }
+        const urlFragment = responseUrl.split("#")[1];
+        if (!urlFragment) {
+          return reject("Unable to retrieve token from callback URL");
+        }
+        const params = new URLSearchParams(urlFragment);
+        const token = params.get("access_token");
+        if (!token) {
+          return reject("Postback URL has no access_token");
+        }
 
-      resolve(token);
-    });
+        resolve(token);
+      }
+    );
   });
 }
 
 // get token
 function getGoogleAuthToken() {
-  return new Promise(async (resolve, reject) => {
-
+  return new Promise((resolve, reject) => {
     const ua = navigator.userAgent;
     const isChrome = ua.includes("Chrome") && !ua.includes("Edg");
-    console.log("ischrome", isChrome)
+    console.log("ischrome", isChrome);
 
     // 1. First check if getAuthToken is available (most common in Chrome)
     if (isChrome && chrome.identity && chrome.identity.getAuthToken) {
@@ -172,22 +174,17 @@ function getGoogleAuthToken() {
         }
       });
 
-    // 2. Otherwise try launchWebAuthFlow (Edge may support it)
+      // 2. Otherwise try launchWebAuthFlow (Edge may support it)
     } else if (chrome.identity && chrome.identity.launchWebAuthFlow) {
       console.log("Trying chrome.identity.launchWebAuthFlow...");
-      try {
-        const token = await launchWebAuthFlowForGoogle();
-        resolve(token);
-      } catch (err) {
-        reject(err);
-      }
-
+      launchWebAuthFlowForGoogle()
+        .then((token) => resolve(token))
+        .catch((err) => reject(err));
     } else {
       reject("This browser does not support the chrome.identity API");
     }
   });
 }
-
 
 // Google Calendar API add Event
 async function addEventToCalendar(token, event) {
@@ -196,21 +193,21 @@ async function addEventToCalendar(token, event) {
   const res = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       summary: event.title,
       description: event.description,
       start: {
         dateTime: event.startDate.toISOString(),
-        timeZone: "Asia/Taipei"
+        timeZone: "Asia/Taipei",
       },
       end: {
         dateTime: event.endDate.toISOString(),
-        timeZone: "Asia/Taipei"
-      }
-    })
+        timeZone: "Asia/Taipei",
+      },
+    }),
   });
 
   if (!res.ok) {
