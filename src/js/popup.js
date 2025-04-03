@@ -1,4 +1,9 @@
-import { getCurrentYearMonth, downloadICS, addOneEventToCalendar } from "./utils.js";
+import {
+  getCurrentYearMonth,
+  downloadICS,
+  addOneEventToCalendar,
+  addBatchEventsToCalendar,
+} from "./utils.js";
 
 function initializeInputs() {
   const { year, month } = getCurrentYearMonth();
@@ -112,18 +117,28 @@ function setupEventListeners() {
 async function insertEventsToGCal(events) {
   // Google OAuth token
   const token = await getGoogleAuthToken();
+  const batchAddEvents = true;
 
-  // add event Google Calendar
-  for (const event of events) {
+  if (!batchAddEvents) {
+    // add event Google Calendar
+    for (const event of events) {
+      try {
+        await addOneEventToCalendar(token, event);
+        console.log("add Event Success", event.title);
+      } catch (err) {
+        console.error("add Event error：", event.title, err);
+      }
+    }
+  } else if (batchAddEvents) {
+    // batch API，done after...
     try {
-      await addOneEventToCalendar(token, event);
-      console.log("add Event Success", event.title);
+      const batchResponse = await addBatchEventsToCalendar(token, events);
+      console.log("Batch request sent!");
+      console.log(batchResponse);
     } catch (err) {
-      console.error("add Event error：", event.title, err);
+      console.error("Batch request failed:", err);
     }
   }
-
-  // batch API，done after...
 }
 
 async function launchWebAuthFlowForGoogle() {
