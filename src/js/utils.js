@@ -1,4 +1,4 @@
-import { getOrCreateCalendar } from "./calendar.js";
+import { getOrCreateCalendar, listAllEvents, isEventChanged } from "./calendar.js";
 
 export function getCurrentYearMonth() {
   const today = new Date();
@@ -23,9 +23,9 @@ PRODID:-//Moodle to Calendar//EN
   for (const event of events) {
     const { title, description, startDate, endDate, uid } = event;
     const format = formatDateForICS;
-
+    const moodleUid = `moodle-${uid}@ccu.edu.tw`;
     icsContent += `BEGIN:VEVENT
-UID:${uid}
+UID:${moodleUid}
 SUMMARY:${title}
 DESCRIPTION:${description || ""}
 DTSTART:${format(startDate)}
@@ -66,7 +66,7 @@ export async function addOneEventToCalendar(token, event) {
         dateTime: event.endDate.toISOString(),
         timeZone: "Asia/Taipei",
       },
-      iCalUID: event.uid,
+      iCalUID: `moodle-${event.uid}@ccu.edu.tw`,
     }),
   });
 
@@ -80,42 +80,6 @@ export async function addOneEventToCalendar(token, event) {
 
 function normalizeBatchText(raw) {
   return raw.replace(/\r?\n/g, "\r\n");
-}
-
-function generateBatchRequestBody(events, boundary = "batch_boundary", calendarId) {
-  const CRLF = "\r\n";
-  let body = "";
-  console.log(calendarId);
-
-  events.forEach((event, i) => {
-    body += `--${boundary}${CRLF}`;
-    body += `Content-Type: application/http${CRLF}`;
-    body += `Content-ID: <item-${i + 1}>${CRLF}${CRLF}`;
-
-    body += `POST /calendar/v3/calendars/${calendarId}/events HTTP/1.1${CRLF}`;
-    body += `Host: www.googleapis.com${CRLF}`;
-    body += `Content-Type: application/json${CRLF}${CRLF}`;
-
-    const eventPayload = {
-      summary: event.title,
-      description: event.description,
-      start: {
-        dateTime: event.startDate.toISOString(),
-        timeZone: "Asia/Taipei",
-      },
-      end: {
-        dateTime: event.endDate.toISOString(),
-        timeZone: "Asia/Taipei",
-      },
-      iCalUID: event.uid,
-    };
-
-    body += JSON.stringify(eventPayload) + CRLF + CRLF;
-    console.log(body);
-  });
-
-  body += `--${boundary}--${CRLF}`;
-  return body;
 }
 
 function parseGoogleBatchResponse(responseText) {
@@ -153,25 +117,127 @@ function parseGoogleBatchResponse(responseText) {
   return results;
 }
 
-// Google Calendar API batch add Event
-export async function addBatchEventsToCalendar(token, events) {
-  const boundary = "batch_boundary_" + Date.now();
-  const calendarId = await getOrCreateCalendar(token);
-  const body = generateBatchRequestBody(events, boundary, calendarId);
+function generateBatchRequestBody(events, boundary = "batch_boundary", calendarId) {
+  const CRLF = "\r\n";
+  let body = "";
 
-  const res = await fetch("https://www.googleapis.com/batch/calendar/v3", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": `multipart/mixed; boundary=${boundary}`,
-    },
-    body,
+  events.forEach((event, i) => {
+    body += `--${boundary}${CRLF}`;
+    body += `Content-Type: application/http${CRLF}`;
+    body += `Content-ID: <item-${i + 1}>${CRLF}${CRLF}`;
+
+    if (event.__patch) {
+      body += `PATCH /calendar/v3/calendars/${calendarId}/events/${event.googleEventId} HTTP/1.1${CRLF}`;
+      body += `Host: www.googleapis.com${CRLF}`;
+      body += `Content-Type: application/json${CRLF}${CRLF}`;
+
+      const eventPayload = {
+        summary: event.title,
+        description: event.description,
+        start: {
+          dateTime: event.startDate.toISOString(),
+          timeZone: "Asia/Taipei",
+        },
+        end: {
+          dateTime: event.endDate.toISOString(),
+          timeZone: "Asia/Taipei",
+        },
+        status: "confirmed",
+      };
+      body += JSON.stringify(eventPayload) + CRLF + CRLF;
+    } else if (event.__delete) {
+      body += `DELETE /calendar/v3/calendars/${calendarId}/events/${event.googleEventId} HTTP/1.1${CRLF}`;
+      body += `Host: www.googleapis.com${CRLF}${CRLF}`;
+    } else {
+      body += `POST /calendar/v3/calendars/${calendarId}/events HTTP/1.1${CRLF}`;
+      body += `Host: www.googleapis.com${CRLF}`;
+      body += `Content-Type: application/json${CRLF}${CRLF}`;
+
+      const eventPayload = {
+        summary: event.title,
+        description: event.description,
+        start: {
+          dateTime: event.startDate.toISOString(),
+          timeZone: "Asia/Taipei",
+        },
+        end: {
+          dateTime: event.endDate.toISOString(),
+          timeZone: "Asia/Taipei",
+        },
+        iCalUID: event.iCalUID,
+      };
+      body += JSON.stringify(eventPayload) + CRLF + CRLF;
+    }
   });
 
-  const text = await res.text();
-  if (!res.ok) {
-    throw new Error(`Batch API Error: ${res.status}\n${text}`);
+  body += `--${boundary}--${CRLF}`;
+  return body;
+}
+
+export async function addBatchEventsToCalendar(token, events) {
+  const calendarId = await getOrCreateCalendar(token);
+
+  const remoteEvents = await listAllEvents(token, calendarId);
+  const remoteEventMap = Object.fromEntries(
+    remoteEvents.filter((ev) => ev.iCalUID).map((ev) => [ev.iCalUID, ev])
+  );
+
+  const eventsToInsert = [];
+  const eventsToPatch = [];
+
+  for (const event of events) {
+    const iCalUID = `moodle-${event.uid}@ccu.edu.tw`;
+    const existing = remoteEventMap[iCalUID];
+
+    if (!existing) {
+      eventsToInsert.push({ ...event, iCalUID });
+    } else if (isEventChanged(event, existing)) {
+      eventsToPatch.push({
+        __patch: true,
+        googleEventId: existing.id,
+        ...event,
+        iCalUID,
+        status: "confirmed",
+      });
+    }
   }
 
-  return parseGoogleBatchResponse(normalizeBatchText(text));
+  const moodleUIDSet = new Set(events.map((e) => `moodle-${e.uid}@ccu.edu.tw`));
+  console.log(moodleUIDSet);
+  const eventsToDelete = remoteEvents
+    .filter((e) => e.iCalUID && !moodleUIDSet.has(e.iCalUID))
+    .map((e) => ({
+      __delete: true,
+      googleEventId: e.id
+    }));
+    
+  console.log("delete", eventsToDelete);
+  const responses = [];
+
+  const makeBatchRequest = async (events, boundary, type) => {
+    if (events.length === 0) return;
+    const body = generateBatchRequestBody(events, boundary, calendarId);
+
+    const res = await fetch("https://www.googleapis.com/batch/calendar/v3", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": `multipart/mixed; boundary=${boundary}`,
+      },
+      body,
+    });
+
+    const text = await res.text();
+    if (!res.ok) throw new Error(`Batch ${type} Error: ${res.status}\n${text}`);
+
+    const parsed = parseGoogleBatchResponse(normalizeBatchText(text));
+    console.log(`${type}`, parsed);
+    responses.push(...parsed);
+  };
+
+  await makeBatchRequest(eventsToPatch, `batch_patch_${Date.now()}`, "PATCH");
+  await makeBatchRequest(eventsToInsert, `batch_insert_${Date.now()}`, "INSERT");
+  await makeBatchRequest(eventsToDelete, `batch_delete_${Date.now()}`, "DELETE");
+
+  return responses;
 }
