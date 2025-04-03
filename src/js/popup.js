@@ -13,10 +13,9 @@ function initializeInputs() {
     const autoImportCheckbox = document.getElementById("autoImportContainer");
     autoImportCheckbox.classList.remove("invisible");
     autoImportCheckbox.querySelector("input").checked = true; // default checked
-  }
-  else {
+  } else {
     // remove checkbox if not chrome
-    const autoImportCheckbox = document.getElementById("autoImportContainer").remove();
+    document.getElementById("autoImportContainer").remove();
   }
 }
 async function fetchCalendarData(sesskey) {
