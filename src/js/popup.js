@@ -1,4 +1,4 @@
-import { getCurrentYearMonth, downloadICS } from "./utils.js";
+import { getCurrentYearMonth, downloadICS, addOneEventToCalendar } from "./utils.js";
 
 function initializeInputs() {
   const { year, month } = getCurrentYearMonth();
@@ -116,7 +116,7 @@ async function insertEventsToGCal(events) {
   // add event Google Calendar
   for (const event of events) {
     try {
-      await addEventToCalendar(token, event);
+      await addOneEventToCalendar(token, event);
       console.log("add Event Success", event.title);
     } catch (err) {
       console.error("add Event error：", event.title, err);
@@ -206,38 +206,6 @@ function getGoogleAuthToken() {
       reject("This browser does not support the chrome.identity API");
     }
   });
-}
-
-// Google Calendar API add Event
-async function addEventToCalendar(token, event) {
-  // Google Calendar API call
-  // Docs: https://developers.google.com/calendar/api/v3/reference/events/insert
-  const res = await fetch("https://www.googleapis.com/calendar/v3/calendars/primary/events", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      summary: event.title,
-      description: event.description,
-      start: {
-        dateTime: event.startDate.toISOString(),
-        timeZone: "Asia/Taipei",
-      },
-      end: {
-        dateTime: event.endDate.toISOString(),
-        timeZone: "Asia/Taipei",
-      },
-    }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`API Error: ${res.status}, ${errText}`);
-  }
-
-  return res.json();
 }
 
 // Initialize when DOM is fully loaded
