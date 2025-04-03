@@ -54,6 +54,10 @@ function setupEventListeners() {
 
         try {
           const events = await fetchCalendarData(sesskey);
+          if (events.length === 0) {
+            document.getElementById("result").textContent = "沒有行事曆事件";
+            return;
+          }
           downloadICS(events);
           document.getElementById("result").textContent = `成功匯出 ${events.length} 個行事曆事件`;
         } catch (error) {

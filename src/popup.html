@@ -5,20 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./css/output.css" rel="stylesheet" />
   </head>
-  <body class="p-4 w-52 flex items-center justify-center flex-col bg-white shadow-md rounded-lg">
+  <body class="p-4 w-56 flex items-center justify-center flex-col bg-white shadow-md rounded-lg">
     <h1 class="text-xl font-bold">Moodle Calendar</h1>
-    <div class="my-2">
-      <input type="number" id="yearInput" class="w-16 p-1 border rounded" /> 年
-      <input type="number" id="monthInput" class="w-12 p-1 border rounded" /> 月
+    <div class="my-2 flex items-center space-x-2">
+      <input
+        type="number"
+        id="yearInput"
+        class="w-20 px-2 py-1 text-center border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+        placeholder="年"
+      />
+      <span class="text-gray-700">年</span>
+      <input
+        type="number"
+        id="monthInput"
+        class="w-16 px-2 py-1 text-center border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+        placeholder="月"
+      />
+      <span class="text-gray-700">月</span>
     </div>
     <button
       id="exportBtn"
-      class="bg-violet-400 text-white px-4 py-2 my-2 rounded cursor-pointer hover:bg-violet-700"
+      class="bg-violet-400 text-white px-4 py-2 my-2 rounded-md shadow-md cursor-pointer hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500"
     >
       取得行事曆
     </button>
     <pre id="result" class="text-sm whitespace-pre-wrap"></pre>
-    <div>This tool help you to export your Moodle calendar events to a .ics file.</div>
+    <div class="text-gray-600 text-sm text-center">
+      This tool helps you export your Moodle calendar events to a .ics file.
+    </div>
 
     <!-- Use type="module" for ES module support -->
     <script type="module" src="./js/popup.js"></script>
