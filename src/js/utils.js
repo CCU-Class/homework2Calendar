@@ -21,10 +21,11 @@ PRODID:-//Moodle to Calendar//EN
 `;
 
   for (const event of events) {
-    const { title, description, startDate, endDate } = event;
+    const { title, description, startDate, endDate, uid } = event;
     const format = formatDateForICS;
 
     icsContent += `BEGIN:VEVENT
+UID:${uid}
 SUMMARY:${title}
 DESCRIPTION:${description || ""}
 DTSTART:${format(startDate)}
@@ -65,6 +66,7 @@ export async function addOneEventToCalendar(token, event) {
         dateTime: event.endDate.toISOString(),
         timeZone: "Asia/Taipei",
       },
+      iCalUID: event.uid,
     }),
   });
 
@@ -105,6 +107,7 @@ function generateBatchRequestBody(events, boundary = "batch_boundary", calendarI
         dateTime: event.endDate.toISOString(),
         timeZone: "Asia/Taipei",
       },
+      iCalUID: event.uid,
     };
 
     body += JSON.stringify(eventPayload) + CRLF + CRLF;

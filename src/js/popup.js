@@ -61,6 +61,7 @@ async function fetchCalendarData(sesskey) {
       title: event.activityname,
       startDate: new Date(event.timestart * 1000 - 3600 * 1000),
       endDate: new Date(event.timestart * 1000),
+      uid: event.id,
     }));
 }
 
