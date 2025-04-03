@@ -4,8 +4,21 @@ function initializeInputs() {
   const { year, month } = getCurrentYearMonth();
   document.getElementById("yearInput").value = year;
   document.getElementById("monthInput").value = month;
+  // add browser to session storage
+  const ua = navigator.userAgent;
+  const isChrome = ua.includes("Chrome") && !ua.includes("Edg");
+  sessionStorage.setItem("isChrome", isChrome ? "true" : "false");
+  if (isChrome) {
+    // show checkbox if auto import is enabled
+    const autoImportCheckbox = document.getElementById("autoImportContainer");
+    autoImportCheckbox.classList.remove("invisible");
+    autoImportCheckbox.querySelector("input").checked = true; // default checked
+  }
+  else {
+    // remove checkbox if not chrome
+    const autoImportCheckbox = document.getElementById("autoImportContainer").remove();
+  }
 }
-
 async function fetchCalendarData(sesskey) {
   const year = parseInt(document.getElementById("yearInput").value);
   const month = parseInt(document.getElementById("monthInput").value);

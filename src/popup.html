@@ -23,6 +23,15 @@
     >
       匯入行事曆
     </button>
+    <div class="flex items-center my-2 invisible" id="autoImportContainer">
+      <label for="autoImportToggle" class="mr-2 text-sm text-gray-700">自動匯入</label>
+      <input 
+        type="checkbox" 
+        id="autoImportToggle" 
+        class="w-5 h-5 text-violet-500 border-gray-300 rounded focus:ring-violet-500" 
+        checked 
+      />
+    </div>
     <pre id="result" class="text-sm whitespace-pre-wrap"></pre>
     <div>This tool help you to export your Moodle calendar events to a .ics file.</div>
 
