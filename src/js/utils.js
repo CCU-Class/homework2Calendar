@@ -208,9 +208,9 @@ export async function addBatchEventsToCalendar(token, events) {
     .filter((e) => e.iCalUID && !moodleUIDSet.has(e.iCalUID))
     .map((e) => ({
       __delete: true,
-      googleEventId: e.id
+      googleEventId: e.id,
     }));
-    
+
   console.log("delete", eventsToDelete);
   const responses = [];
 

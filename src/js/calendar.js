@@ -78,13 +78,12 @@ export function isEventChanged(local, remote) {
   }
   if (local.title !== remote.summary) return true;
   if (local.description !== remote.description) return true;
-  
+
   if (!isSameTime(local.startDate, remote.start?.dateTime)) return true;
   if (!isSameTime(local.endDate, remote.end?.dateTime)) return true;
 
   return false;
 }
-
 
 export async function listAllEvents(token, calendarId) {
   const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?showDeleted=true`;
@@ -101,4 +100,3 @@ export async function listAllEvents(token, calendarId) {
 
   return data.items || [];
 }
-
