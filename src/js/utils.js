@@ -1,3 +1,5 @@
+import { getOrCreateCalendar } from "./calendar.js";
+
 export function getCurrentYearMonth() {
   const today = new Date();
   return {
@@ -78,16 +80,18 @@ function normalizeBatchText(raw) {
   return raw.replace(/\r?\n/g, "\r\n");
 }
 
-function generateBatchRequestBody(events, boundary = "batch_boundary") {
+function generateBatchRequestBody(events, boundary = "batch_boundary", calendarId) {
   const CRLF = "\r\n";
   let body = "";
+  console.log(calendarId);
 
   events.forEach((event, i) => {
     body += `--${boundary}${CRLF}`;
     body += `Content-Type: application/http${CRLF}`;
     body += `Content-ID: <item-${i + 1}>${CRLF}${CRLF}`;
 
-    body += `POST /calendar/v3/calendars/primary/events HTTP/1.1${CRLF}`;
+    body += `POST /calendar/v3/calendars/${calendarId}/events HTTP/1.1${CRLF}`;
+    body += `Host: www.googleapis.com${CRLF}`;
     body += `Content-Type: application/json${CRLF}${CRLF}`;
 
     const eventPayload = {
@@ -104,6 +108,7 @@ function generateBatchRequestBody(events, boundary = "batch_boundary") {
     };
 
     body += JSON.stringify(eventPayload) + CRLF + CRLF;
+    console.log(body);
   });
 
   body += `--${boundary}--${CRLF}`;
@@ -148,7 +153,8 @@ function parseGoogleBatchResponse(responseText) {
 // Google Calendar API batch add Event
 export async function addBatchEventsToCalendar(token, events) {
   const boundary = "batch_boundary_" + Date.now();
-  const body = generateBatchRequestBody(events, boundary);
+  const calendarId = await getOrCreateCalendar(token);
+  const body = generateBatchRequestBody(events, boundary, calendarId);
 
   const res = await fetch("https://www.googleapis.com/batch/calendar/v3", {
     method: "POST",

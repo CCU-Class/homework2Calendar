@@ -145,7 +145,10 @@ async function launchWebAuthFlowForGoogle() {
   return new Promise((resolve, reject) => {
     // Except Chrome Client ID
     const clientId = import.meta.env.VITE_NOT_CHROME_CLIENT_ID;
-    const scope = "https://www.googleapis.com/auth/calendar.events";
+    const scopes = [
+      "https://www.googleapis.com/auth/calendar.events",
+      "https://www.googleapis.com/auth/calendar",
+    ];
 
     const redirectUri = `https://${chrome.runtime.id}.chromiumapp.org/`;
 
@@ -154,7 +157,7 @@ async function launchWebAuthFlowForGoogle() {
       `?response_type=token` +
       `&client_id=${encodeURIComponent(clientId)}` +
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-      `&scope=${encodeURIComponent(scope)}` +
+      `&scope=${encodeURIComponent(scopes.join(" "))}` +
       `&prompt=consent`;
 
     chrome.identity.launchWebAuthFlow(
