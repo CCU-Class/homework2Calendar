@@ -24,7 +24,7 @@
     "https://ecourse2.ccu.edu.tw/*"
   ],
   "oauth2": {
-    "client_id": "529259850785-eg40qfiu14k4806pocqtgoqprs4v5njn.apps.googleusercontent.com",
+    "client_id": "529259850785-j725mrpen095bfibvda7rd5ck6aphntc.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/calendar.events",
       "https://www.googleapis.com/auth/calendar"
