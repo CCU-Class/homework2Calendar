@@ -17,4 +17,4 @@
 ## 聯絡我們
 
 如果您有任何關於隱私權的問題，歡迎聯絡我們：  
-📧 Email: pineapple2023@gmail.com
+📧 Email: PineappleSchedule2023@gmail.com
