@@ -65,3 +65,37 @@ export async function updateCalendarColor(
 
   return res.json();
 }
+function isSameTime(localDate, remoteDateTime) {
+  if (!remoteDateTime) return false;
+
+  return localDate.getTime() === new Date(remoteDateTime).getTime();
+}
+
+export function isEventChanged(local, remote) {
+  if (remote.status === "cancelled") {
+    return true;
+  }
+  if (local.title !== remote.summary) return true;
+  if (local.description !== remote.description) return true;
+
+  if (!isSameTime(local.startDate, remote.start?.dateTime)) return true;
+  if (!isSameTime(local.endDate, remote.end?.dateTime)) return true;
+
+  return false;
+}
+
+export async function listAllEvents(token, calendarId) {
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?showDeleted=true`;
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(`Failed to list events: ${res.status} ${data.error?.message}`);
+  }
+
+  return data.items || [];
+}
