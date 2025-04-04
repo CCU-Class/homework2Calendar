@@ -1,3 +1,6 @@
+import { getGoogleAuthToken } from "./oauth.js";
+import { addOneEventToCalendar, addBatchEventsToCalendar } from "./utils.js";
+
 export async function getOrCreateCalendar(token, name = import.meta.env.VITE_CALENDAR_NAME) {
   const listRes = await fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
     headers: {
@@ -98,4 +101,31 @@ export async function listAllEvents(token, calendarId) {
   }
 
   return data.items || [];
+}
+
+export async function insertEventsToGCal(events) {
+  // Google OAuth token
+  const token = await getGoogleAuthToken();
+  const batchAddEvents = true;
+
+  if (!batchAddEvents) {
+    // add event Google Calendar
+    for (const event of events) {
+      try {
+        await addOneEventToCalendar(token, event);
+        console.log("add Event Success", event.title);
+      } catch (err) {
+        console.error("add Event error：", event.title, err);
+      }
+    }
+  } else if (batchAddEvents) {
+    // batch API，done after...
+    try {
+      const batchResponse = await addBatchEventsToCalendar(token, events);
+      console.log("Batch request sent!");
+      console.log(batchResponse);
+    } catch (err) {
+      console.error("Batch request failed:", err);
+    }
+  }
 }
