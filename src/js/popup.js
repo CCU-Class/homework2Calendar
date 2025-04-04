@@ -49,7 +49,8 @@ function setupEventListeners() {
         const sesskey = res?.sesskey;
         if (!sesskey) {
           console.log("no touch sesskey");
-          document.getElementById("result").textContent = "無法獲取 sesskey，請先登入 Moodle 或者重新整理頁面";
+          document.getElementById("result").textContent =
+            "無法獲取 sesskey，請先登入 Moodle 或者重新整理頁面";
           return;
         }
 
@@ -77,7 +78,8 @@ function setupEventListeners() {
         const sesskey = res?.sesskey;
         if (!sesskey) {
           console.log("no touch sesskey");
-          document.getElementById("result").textContent = "無法獲取 sesskey，請先登入 Moodle 或者重新整理頁面";
+          document.getElementById("result").textContent =
+            "無法獲取 sesskey，請先登入 Moodle 或者重新整理頁面";
           return;
         }
         console.log("import");
