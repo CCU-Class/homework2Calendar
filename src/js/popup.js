@@ -15,7 +15,15 @@ function initializeInputs() {
     // show checkbox if auto import is enabled
     const autoImportCheckbox = document.getElementById("autoImportContainer");
     autoImportCheckbox.classList.remove("invisible");
-    autoImportCheckbox.querySelector("input").checked = true; // default checked
+    const checkbox = autoImportCheckbox.querySelector("input");
+
+    chrome.storage.local.get("autoImportEnabled", (result) => {
+      checkbox.checked = result.autoImportEnabled ?? true;
+    });
+
+    checkbox.addEventListener("change", (e) => {
+      chrome.storage.local.set({ autoImportEnabled: e.target.checked });
+    });
   } else {
     // remove checkbox if not chrome
     document.getElementById("autoImportContainer").remove();
@@ -41,7 +49,7 @@ function setupEventListeners() {
         const sesskey = res?.sesskey;
         if (!sesskey) {
           console.log("no touch sesskey");
-          document.getElementById("result").textContent = "無法獲取 sesskey，請先登入 Moodle";
+          document.getElementById("result").textContent = "無法獲取 sesskey，請先登入 Moodle 或者重新整理頁面";
           return;
         }
 
@@ -52,8 +60,9 @@ function setupEventListeners() {
             document.getElementById("result").textContent = "沒有行事曆事件";
             return;
           }
+          document.getElementById("result").textContent = "正在匯出 ECourse2 作業...";
           downloadICS(events);
-          document.getElementById("result").textContent = `成功匯出 ${events.length} 個行事曆事件`;
+          document.getElementById("result").textContent = `成功匯出 ${events.length} 個作業事件`;
         } catch (error) {
           console.error(error);
           document.getElementById("result").textContent = "發生錯誤，請稍後再試";
@@ -68,16 +77,17 @@ function setupEventListeners() {
         const sesskey = res?.sesskey;
         if (!sesskey) {
           console.log("no touch sesskey");
-          document.getElementById("result").textContent = "無法獲取 sesskey，請先登入 Moodle";
+          document.getElementById("result").textContent = "無法獲取 sesskey，請先登入 Moodle 或者重新整理頁面";
           return;
         }
         console.log("import");
+        document.getElementById("result").textContent = "匯入作業進入行事曆中...";
         const { year, month, day } = getDate();
         chrome.runtime.sendMessage(
           { action: "import_events", sesskey, year, month, day },
           (res) => {
             if (res?.ok) {
-              document.getElementById("result").textContent = `成功匯入 ${res.count} 個行事曆事件`;
+              document.getElementById("result").textContent = `成功匯入 ${res.count} 個作業事件`;
             } else {
               document.getElementById("result").textContent = res?.error || "發生錯誤，請稍後再試";
             }
