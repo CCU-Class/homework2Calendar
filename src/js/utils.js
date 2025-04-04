@@ -174,10 +174,10 @@ function generateBatchRequestBody(events, boundary = "batch_boundary", calendarI
   return body;
 }
 
-export async function addBatchEventsToCalendar(token, events) {
+export async function addBatchEventsToCalendar(token, events, year, month) {
   const calendarId = await getOrCreateCalendar(token);
 
-  const remoteEvents = await listAllEvents(token, calendarId);
+  const remoteEvents = await listAllEvents(token, calendarId, year, month);
   const remoteEventMap = Object.fromEntries(
     remoteEvents.filter((ev) => ev.iCalUID).map((ev) => [ev.iCalUID, ev])
   );
@@ -203,7 +203,7 @@ export async function addBatchEventsToCalendar(token, events) {
   }
 
   const moodleUIDSet = new Set(events.map((e) => `moodle-${e.uid}@ccu.edu.tw`));
-  console.log(moodleUIDSet);
+  // console.log(moodleUIDSet);
   const eventsToDelete = remoteEvents
     .filter((e) => e.iCalUID && !moodleUIDSet.has(e.iCalUID))
     .map((e) => ({
@@ -211,7 +211,7 @@ export async function addBatchEventsToCalendar(token, events) {
       googleEventId: e.id,
     }));
 
-  console.log("delete", eventsToDelete);
+  // console.log("delete", eventsToDelete);
   const responses = [];
 
   const makeBatchRequest = async (events, boundary, type) => {
@@ -260,7 +260,7 @@ export async function fetchCalendarData(sesskey, year, month, day) {
   );
 
   const raw_data = await response.json();
-  console.log(raw_data);
+  // console.log(raw_data);
   return raw_data[0]["data"]["weeks"]
     .flatMap((week) => week.days)
     .flatMap((day) => day.events)
