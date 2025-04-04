@@ -5,6 +5,8 @@ set -o allexport
 source .env
 set +o allexport
 
+./zip_dist.sh
+
 ZIP_FILE="dist.zip"
 
 if [ ! -f "$ZIP_FILE" ]; then
