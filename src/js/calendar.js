@@ -65,7 +65,6 @@ export async function updateCalendarColor(
 
   return res.json();
 }
-
 function isSameTime(localDate, remoteDateTime) {
   if (!remoteDateTime) return false;
 
