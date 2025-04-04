@@ -7,9 +7,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 (async () => {
-  chrome.storage.local.get(null, (data) => {
-    console.log("chrome.storage.local 的內容：", data);
-  });
   const ua = navigator.userAgent;
   const isChrome = ua.includes("Chrome") && !ua.includes("Edg");
   if (!isChrome) return;
@@ -31,7 +28,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   const last = state.last_import_time ?? 0;
   const now = new Date();
   console.log(now.getTime() - last);
-  console.log(now.getTime() - last  < 60 * 60 * 1000);
+  // console.log(now.getTime() - last < 60 * 60 * 1000);
   if (now.getTime() - last < 60 * 60 * 1000) {
     return;
   }
