@@ -241,3 +241,34 @@ export async function addBatchEventsToCalendar(token, events) {
 
   return responses;
 }
+
+export async function fetchCalendarData(sesskey, year, month, day) {
+  const response = await fetch(
+    `https://ecourse2.ccu.edu.tw/lib/ajax/service.php?sesskey=${sesskey}&info=core_calendar_get_calendar_monthly_view`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([
+        {
+          index: 0,
+          methodname: "core_calendar_get_calendar_monthly_view",
+          args: { year, month, day },
+        },
+      ]),
+      credentials: "include",
+    }
+  );
+
+  const raw_data = await response.json();
+  console.log(raw_data);
+  return raw_data[0]["data"]["weeks"]
+    .flatMap((week) => week.days)
+    .flatMap((day) => day.events)
+    .map((event) => ({
+      description: event.course.fullname,
+      title: event.activityname,
+      startDate: new Date(event.timestart * 1000 - 3600 * 1000),
+      endDate: new Date(event.timestart * 1000),
+      uid: event.id,
+    }));
+}

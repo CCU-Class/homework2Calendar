@@ -30,5 +30,8 @@
       "https://www.googleapis.com/auth/calendar.events",
       "https://www.googleapis.com/auth/calendar"
     ]
+  },
+  "background": {
+    "service_worker": "js/background.js"
   }
 }
