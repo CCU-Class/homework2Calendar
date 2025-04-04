@@ -15,7 +15,15 @@ function initializeInputs() {
     // show checkbox if auto import is enabled
     const autoImportCheckbox = document.getElementById("autoImportContainer");
     autoImportCheckbox.classList.remove("invisible");
-    autoImportCheckbox.querySelector("input").checked = true; // default checked
+    const checkbox = autoImportCheckbox.querySelector("input");
+
+    chrome.storage.local.get("autoImportEnabled", (result) => {
+      checkbox.checked = result.autoImportEnabled ?? true;
+    });
+
+    checkbox.addEventListener("change", (e) => {
+      chrome.storage.local.set({ autoImportEnabled: e.target.checked });
+    });
   } else {
     // remove checkbox if not chrome
     document.getElementById("autoImportContainer").remove();

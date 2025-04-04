@@ -174,10 +174,10 @@ function generateBatchRequestBody(events, boundary = "batch_boundary", calendarI
   return body;
 }
 
-export async function addBatchEventsToCalendar(token, events) {
+export async function addBatchEventsToCalendar(token, events, year, month) {
   const calendarId = await getOrCreateCalendar(token);
 
-  const remoteEvents = await listAllEvents(token, calendarId);
+  const remoteEvents = await listAllEvents(token, calendarId, year, month);
   const remoteEventMap = Object.fromEntries(
     remoteEvents.filter((ev) => ev.iCalUID).map((ev) => [ev.iCalUID, ev])
   );

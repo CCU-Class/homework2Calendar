@@ -87,8 +87,12 @@ export function isEventChanged(local, remote) {
   return false;
 }
 
-export async function listAllEvents(token, calendarId) {
-  const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?showDeleted=true`;
+export async function listAllEvents(token, calendarId, year, month) {
+  const startTime = new Date(year, month - 1, 1).toISOString();
+  const endTime = new Date(year, month, 1).toISOString();
+
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?showDeleted=true&timeMin=${encodeURIComponent(startTime)}&timeMax=${encodeURIComponent(endTime)}&maxResults=2500&singleEvents=true&orderBy=startTime`;
+
   const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -103,7 +107,7 @@ export async function listAllEvents(token, calendarId) {
   return data.items || [];
 }
 
-export async function insertEventsToGCal(events) {
+export async function insertEventsToGCal(events, year, month) {
   // Google OAuth token
   const token = await getGoogleAuthToken();
   const batchAddEvents = true;
@@ -121,7 +125,7 @@ export async function insertEventsToGCal(events) {
   } else if (batchAddEvents) {
     // batch API，done after...
     try {
-      const batchResponse = await addBatchEventsToCalendar(token, events);
+      const batchResponse = await addBatchEventsToCalendar(token, events, year, month);
       console.log("Batch request sent!");
       console.log(batchResponse);
     } catch (err) {
