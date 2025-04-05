@@ -1,18 +1,23 @@
 <!doctype html>
-<html>
+<html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="./css/output.css" rel="stylesheet" />
+    <title>CCU Calendar Helper</title>
   </head>
-  <body class="p-4 w-60 flex items-center justify-center flex-col bg-white shadow-md rounded-lg">
-    <h1 class="text-xl font-bold">CCU Calendar Helper</h1>
-    <div class="my-2 flex items-center space-x-2">
+  <body
+    class="p-6 w-80 bg-white text-gray-800 shadow-lg rounded-xl flex flex-col items-center font-sans"
+  >
+    <h1 class="text-xl font-semibold text-[#e88842] mb-2 whitespace-nowrap">CCU Calendar Helper</h1>
+    <div class="w-full border-b border-[#e8b68d] my-2"></div>
+
+    <div class="my-3 w-full flex justify-center items-center space-x-2">
       <input
         type="number"
         id="yearInput"
         min="1992"
-        class="w-20 px-2 py-1 text-center border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+        class="w-20 px-2 py-1 text-center border border-[#e8b68d] rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#e88842]"
         placeholder="年"
       />
       <span class="text-gray-700">年</span>
@@ -21,38 +26,60 @@
         id="monthInput"
         min="1"
         max="12"
-        class="w-16 px-2 py-1 text-center border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
+        class="w-16 px-2 py-1 text-center border border-[#e8b68d] rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-[#e88842]"
         placeholder="月"
       />
       <span class="text-gray-700">月</span>
     </div>
+
     <button
       id="exportBtn"
-      class="bg-violet-400 text-white px-4 py-2 my-2 rounded-md shadow-md cursor-pointer hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500"
+      class="w-full bg-[#f4a261] text-white px-4 py-2 my-2 rounded-full hover:bg-[#e07628] transition"
     >
       匯出作業行事曆檔案
     </button>
     <button
       id="importBtn"
-      class="bg-gray-400 text-white px-4 py-2 my-2 rounded cursor-pointer hover:bg-gray-700"
+      class="w-full bg-[#b0b0b0] text-white px-4 py-2 my-2 rounded-full hover:bg-[#8c8c8c] transition"
     >
       更新事件至行事曆
     </button>
-    <div class="flex items-center my-2 invisible" id="autoImportContainer">
+
+    <div class="flex items-center my-2" id="autoImportContainer">
       <label for="autoImportToggle" class="mr-2 text-sm text-gray-700">自動匯入</label>
       <input
         type="checkbox"
         id="autoImportToggle"
-        class="w-5 h-5 text-violet-500 border-gray-300 rounded focus:ring-violet-500"
+        class="w-5 h-5 accent-[#e88842] rounded focus:ring-[#e88842]"
         checked
       />
     </div>
-    <pre id="result" class="text-sm my-2 whitespace-pre-wrap"></pre>
-    <div class="text-gray-600 text-sm text-center">
-      將 ECourse2 的行事曆匯出為 iCalendar 檔案，並匯入到 Google 行事曆中。
-    </div>
 
-    <!-- Use type="module" for ES module support -->
+    <pre
+      id="result"
+      class="text-sm whitespace-pre-wrap text-left w-full px-3 py-2 rounded-md border transition hidden"
+    ></pre>
+    <p class="text-gray-700 text-sm text-center my-2 leading-relaxed">
+      將 ECourse2 的行事曆匯出為 iCalendar 檔案，並匯入到 Google 行事曆中。
+    </p>
+
+    <div class="w-full border-t border-[#e8b68d] my-3"></div>
+
+    <footer class="text-center text-xs text-gray-500 w-full">
+      <div class="flex justify-center gap-x-4">
+        <a href="mailto:PineappleSchedule2023@gmail.com" class="text-[#e88842] hover:underline"
+          >聯絡我們</a
+        >
+        <a
+          href="https://forms.gle/your-google-form-link"
+          target="_blank"
+          class="text-[#e88842] hover:underline"
+        >
+          提供回饋
+        </a>
+      </div>
+    </footer>
+
     <script type="module" src="./js/popup.js"></script>
   </body>
 </html>
