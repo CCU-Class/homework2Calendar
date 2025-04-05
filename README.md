@@ -71,16 +71,16 @@ npm run format    # 使用 Prettier 自動格式化程式碼
 1. 登入 Moodle（目前支援中正大學 https://ecourse2.ccu.edu.tw/）
 2. 點擊瀏覽器右上角 Extension 圖示，開啟插件視窗
 3. 選擇年份與月份，點擊：
-   - 「📥 取得行事曆」：下載 `.ics` 檔案
-   - 「📤 匯入行事曆」：登入 Google 並自動新增至 Google Calendar
+   - 「📥 匯出作業行事曆檔案」：下載 `.ics` 檔案
+   - 「📤 更新事件至行事曆」：登入 Google 並自動新增至 Google Calendar
 
 ---
 
 ## 🔐 授權與隱私
 
-- 本插件僅在使用者當前登入 Moodle 且主動點擊下操作才會擷取資料
+- 本插件僅在使用者當前登入 eCourse2 且主動點擊下操作, 或者勾選自動匯入才會擷取資料
 - Google OAuth 權限僅限寫入行事曆事件，不會存取其他個資
-- 資料僅存在本地，無傳送至第三方伺服器
+- 資料直接匯入 Google Calendar，無額外存儲資料
 
 ---
 
