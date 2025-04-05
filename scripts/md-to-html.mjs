@@ -42,7 +42,7 @@ async function convertMarkdownFile(inputPath, outputPath, title) {
 
 async function main() {
   await convertMarkdownFile('README.md', 'public/index.html', '作業同步工具');
-  await convertMarkdownFile('policy.md', 'public/privacy.html', '隱私權政策');
+  await convertMarkdownFile('privacy.md', 'public/privacy.html', '隱私權政策');
 }
 
 main();
