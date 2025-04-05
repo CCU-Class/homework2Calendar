@@ -1,15 +1,15 @@
 # 📅 Moodle to Google Calendar Extension
 
-這是一個用於將 CCU（中正大學）Moodle 上的作業或行事曆事件，一鍵匯出至 Google Calendar 的 Chrome/Edge 擴充功能。  
+這是一個用於將 中正大學 Moodle (eCourse2) 上的作業或行事曆事件，一鍵匯出至 Google Calendar 的 Chrome/Edge 擴充功能。  
 可選擇匯出 `.ics` 檔案下載，或直接自動授權後匯入 Google 行事曆。
 
-> 幫助學生更有效管理 Moodle 上的課業與繳交時程。
+> 幫助學生更有效管理 eCourse2 上的課業與繳交時程。
 
 ---
 
 ## 🚀 功能特色
 
-- 🔍 自動抓取 Moodle 課程中的行事曆事件（需登入）
+- 🔍 自動抓取 Moodle (eCourse2) 課程中的行事曆事件（需登入）
 - 📥 支援下載 `.ics` 檔案，可匯入至任何行事曆 App
 - 📆 可直接登入 Google 帳戶，將事件自動新增至 Google Calendar
 - 🖱️ 操作簡單，一鍵完成
