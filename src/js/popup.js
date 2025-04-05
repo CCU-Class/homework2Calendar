@@ -42,6 +42,23 @@ function getDate() {
   return { year, month, day };
 }
 
+function updateResult(status, message) {
+  const el = document.getElementById("result");
+
+  el.className =
+    "text-sm whitespace-pre-wrap text-left w-full px-3 py-2 rounded-md border transition";
+
+  if (status === "success") {
+    el.classList.add("bg-green-50", "text-green-700", "border-green-300");
+  } else if (status === "error") {
+    el.classList.add("bg-red-50", "text-red-700", "border-red-300");
+  } else if (status === "loading") {
+    el.classList.add("bg-orange-50", "text-orange-700", "border-orange-300", "loading-dots");
+  }
+
+  el.textContent = message;
+}
+
 function setupEventListeners() {
   document.getElementById("exportBtn").addEventListener("click", async () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -76,22 +93,27 @@ function setupEventListeners() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "get_sesskey" }, async (res) => {
         const sesskey = res?.sesskey;
+        const resultEl = document.getElementById("result");
+
         if (!sesskey) {
           console.log("no touch sesskey");
-          document.getElementById("result").textContent =
-            "無法獲取 sesskey，請先登入 Moodle 或者重新整理頁面";
+          updateResult("error", "無法獲取 sesskey，請先登入 Moodle 或重新整理頁面");
           return;
         }
+
         console.log("import");
-        document.getElementById("result").textContent = "匯入作業進入行事曆中...";
+        updateResult("loading", "匯入作業進入行事曆中");
+
         const { year, month, day } = getDate();
+
         chrome.runtime.sendMessage(
           { action: "import_events", sesskey, year, month, day },
           (res) => {
+            resultEl.classList.remove("loading-dots");
             if (res?.ok) {
-              document.getElementById("result").textContent = `成功匯入 ${res.count} 個作業事件`;
+              updateResult("success", `成功匯入 ${res.count} 個作業事件`);
             } else {
-              document.getElementById("result").textContent = res?.error || "發生錯誤，請稍後再試";
+              updateResult("error", res?.error || "發生錯誤，請稍後再試");
             }
           }
         );
