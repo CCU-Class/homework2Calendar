@@ -2,7 +2,9 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.0.17",
     "dotenv": "^16.4.7",
+    "fs-extra": "^11.3.0",
     "jsonpath-plus": "^10.3.0",
+    "markdown-it": "^14.1.0",
     "rollup": "^4.38.0",
     "tailwindcss": "^4.0.17"
   },
@@ -19,6 +21,7 @@
     "build": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css && vite build",
     "hotfixcss": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css --watch",
     "format": "prettier --write 'src/**/*.{js,html,css}'",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:md": "node scripts/md-to-html.mjs"
   }
 }
