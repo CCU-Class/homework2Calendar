@@ -6,5 +6,4 @@ dist/
 *.crx
 *.pem
 .env
-public/index.html
-public/privacy.html
+public/
