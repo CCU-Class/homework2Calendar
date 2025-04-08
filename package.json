@@ -22,6 +22,8 @@
     "hotfixcss": "npx tailwindcss -c tailwind.config.js -i ./src/css/input.css -o ./src/css/output.css --watch",
     "format": "prettier --write 'src/**/*.{js,html,css}'",
     "lint": "eslint",
-    "build:md": "node scripts/md-to-html.mjs"
+    "build:md": "node scripts/md-to-html.mjs",
+    "zip:dev": "zip -r dist_dev.zip dist",
+    "zip:prod": "./zip_dist.sh"
   }
 }
