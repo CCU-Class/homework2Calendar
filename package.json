@@ -23,7 +23,7 @@
     "format": "prettier --write 'src/**/*.{js,html,css}'",
     "lint": "eslint",
     "build:md": "node scripts/md-to-html.mjs",
-    "zip:dev": "zip -r dist_dev.zip dist",
-    "zip:prod": "./zip_dist.sh"
+    "zip:dev": "npm run build && zip -r dist_dev.zip dist",
+    "zip:prod": "npm run build && ./zip_dist.sh"
   }
 }
