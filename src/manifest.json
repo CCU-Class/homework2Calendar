@@ -1,7 +1,7 @@
 {
   "name": "CCU Calendar Helper",
   "description": "Base Level Extension",
-  "version": "2.0",
+  "version": "2.1",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtMzCqHrKjckm2lDGrMM3Ep1YfdzcPlMudJEqM//IVemLU4xXVaVfOsQMx668eCgl7CEtzLZuvrC9Ce5+RUXv53A17lm6zuWPMNjQ0pTEe+X/NsD+Hfrdvspp6YWu997JIRlEDfcWgbwVb4GjAqd/fVKgHuWnIsYPsinltbPgp1OGndMzFIAihUF1MfxHuAH911HjXj/vn/+gt9kFnEoMy6BvRq2EV1UuYeCb5sv9lX4YuEd0HkSdqWKmtG3ud/QEOA1am5Uz7CzUR8pC5mCuvql6lOR3EkjwxjpfzlnVtkO/lq2aXXuYqC7or3ILXtzIRCc1A43a942PUdkdNIfZGwIDAQAB",
   "manifest_version": 3,
   "content_scripts": [
